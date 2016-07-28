@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.unl.lapc.registrodocente.MainClaseActivity">
+    <item
+        android:id="@+id/action_asistencias"
+        android:orderInCategory="100"
+        android:title="Asistencias"
+        android:icon="@android:drawable/ic_menu_today"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_notas"
+        android:orderInCategory="100"
+        android:title="Notas"
+        android:icon="@android:drawable/ic_menu_my_calendar"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_ord_apellido"
+        android:orderInCategory="100"
+        android:title="Auto ordenar"
+        android:icon="@android:drawable/ic_menu_sort_alphabetically"
+        app:showAsAction="never" />
+</menu>
