@@ -8,17 +8,16 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.unl.lapc.registrodocente.R;
-import com.unl.lapc.registrodocente.modelo.Clase;
-import com.unl.lapc.registrodocente.modelo.ClaseEstudiante;
+import com.unl.lapc.registrodocente.modelo.Estudiante;
 
 import java.util.List;
 
 /**
  * Created by Usuario on 11/07/2016.
  */
-public class ClaseEstudianteAdapter extends ArrayAdapter<ClaseEstudiante> {
+public class ClaseEstudianteAdapter extends ArrayAdapter<Estudiante> {
 
-    public ClaseEstudianteAdapter(Context context, List<ClaseEstudiante> objects) {
+    public ClaseEstudianteAdapter(Context context, List<Estudiante> objects) {
         super(context, 0, objects);
     }
 
@@ -41,11 +40,11 @@ public class ClaseEstudianteAdapter extends ArrayAdapter<ClaseEstudiante> {
         TextView cod = (TextView) convertView.findViewById(R.id.txtCodigo);
 
         // Lead actual.
-        ClaseEstudiante lead = getItem(position);
+        Estudiante lead = getItem(position);
 
         // Setup.
         //Glide.with(getContext()).load(lead.getImage()).into(avatar);
-        name.setText(lead.getEstudiante().getNombresCompletos());
+        name.setText(lead.getNombresCompletos());
         cod.setText(""+lead.getOrden()+ ". ");
 
         return convertView;

@@ -9,12 +9,12 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_layers_black_48dp"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.Main"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -24,30 +24,40 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PeriodosActivity"
+            android:name=".activity.Periodos"
             android:label="Periodos académicos"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".activity.Main" />
+        <activity android:name=".activity.Quimestres" />
         <activity
-            android:name=".EditPeriodoActivity"
+            android:name=".activity.EditPeriodo"
             android:label="Editar periodo"
-            android:parentActivityName=".PeriodosActivity" />
+            android:parentActivityName=".activity.Periodos" />
         <activity
-            android:name=".ClasesActivity"
+            android:name=".activity.Clases"
             android:label="Clases"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".activity.Main" />
         <activity
-            android:name=".EditClaseActivity"
+            android:name=".activity.EditClase"
             android:label="Clases"
-            android:parentActivityName=".ClasesActivity" />
+            android:parentActivityName=".activity.Clases" />
         <activity
-            android:name=".MainClaseActivity"
+            android:name=".activity.MainClases"
             android:label="Clase: "
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".activity.Main" />
         <activity
-            android:name=".EditEstudianteActivity"
+            android:name=".activity.EditEstudiante"
             android:label="Editar estudiante" />
-        <activity android:name=".AsistanciasActivity">
-        </activity>
+        <activity android:name=".activity.Asistancias" />
+        <activity
+            android:name=".activity.Acreditables"
+            android:label="Acreditables" />
+        <activity
+            android:name=".activity.EditQuimestre"
+            android:label="Editar quimestre" />
+        <activity
+            android:name=".activity.EditAcreditable"
+            android:label="Editar Acreditable" />
+        <activity android:name=".activity.Calendarios"></activity>
     </application>
 
 </manifest>

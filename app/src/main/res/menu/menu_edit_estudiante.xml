@@ -1,23 +1,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.unl.lapc.registrodocente.EditEstudianteActivity">
+    tools:context=".activity.EditEstudiante">
     <item
-        android:id="@+id/action_save_estudante"
+        android:id="@+id/action_save"
         android:orderInCategory="100"
         android:title="Guardar"
         android:icon="@android:drawable/ic_menu_save"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_remover_estudante"
+        android:id="@+id/action_delete"
         android:orderInCategory="100"
         android:title="Remover"
         android:icon="@android:drawable/ic_menu_delete"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_cancel_estudante"
+        android:id="@+id/action_back"
         android:orderInCategory="100"
         android:title="Atras"
         android:icon="@android:drawable/ic_menu_revert"

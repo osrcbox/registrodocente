@@ -1,4 +1,4 @@
-package com.unl.lapc.registrodocente;
+package com.unl.lapc.registrodocente.activity;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
@@ -10,15 +10,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.unl.lapc.registrodocente.R;
 import com.unl.lapc.registrodocente.adapter.ClaseEstudianteAdapter;
-import com.unl.lapc.registrodocente.adapter.ClasesAdapter;
 import com.unl.lapc.registrodocente.dao.ClaseDao;
 import com.unl.lapc.registrodocente.dao.EstudianteDao;
 import com.unl.lapc.registrodocente.modelo.Clase;
-import com.unl.lapc.registrodocente.modelo.ClaseEstudiante;
 import com.unl.lapc.registrodocente.modelo.Estudiante;
 
-public class MainClaseActivity extends AppCompatActivity {
+public class MainClases extends AppCompatActivity {
 
     private ListView mLeadsList;
     private ClaseDao dao;
@@ -42,12 +41,12 @@ public class MainClaseActivity extends AppCompatActivity {
             clase = dao.getClase(clase.getId());
         }
 
-        mLeadsAdapter = new ClaseEstudianteAdapter(getApplicationContext(), dao.getEstudiantes(clase));
+        mLeadsAdapter = new ClaseEstudianteAdapter(getApplicationContext(), daoEstudiante.getEstudiantes(clase));
         mLeadsList.setAdapter(mLeadsAdapter);
         mLeadsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ClaseEstudiante cls = (ClaseEstudiante) mLeadsList.getItemAtPosition(i);
+                Estudiante cls = (Estudiante) mLeadsList.getItemAtPosition(i);
                 if(cls!=null) {
                     editEstudiante(cls);
                 }
@@ -62,17 +61,17 @@ public class MainClaseActivity extends AppCompatActivity {
             public void onClick(View view) {
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
-                editEstudiante(new ClaseEstudiante(clase, new Estudiante()));
+                editEstudiante(new Estudiante(clase));
 
             }
         });
     }
 
-    private void editEstudiante(ClaseEstudiante claseEstudiante){
-        Intent intent = new Intent(this, EditEstudianteActivity.class);
+    private void editEstudiante(Estudiante estudiante){
+        Intent intent = new Intent(this, EditEstudiante.class);
 
         intent.putExtra("clase", clase);
-        intent.putExtra("claseEstudiante", claseEstudiante);
+        intent.putExtra("estudiante", estudiante);
 
         startActivity(intent);
     }
@@ -88,8 +87,8 @@ public class MainClaseActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_ord_apellido) {
-            dao.ordernarApellidos(clase);
-            mLeadsAdapter = new ClaseEstudianteAdapter(getApplicationContext(), dao.getEstudiantes(clase));
+            daoEstudiante.ordernarApellidos(clase);
+            mLeadsAdapter = new ClaseEstudianteAdapter(getApplicationContext(), daoEstudiante.getEstudiantes(clase));
             mLeadsList.setAdapter(mLeadsAdapter);
 
             mLeadsAdapter.notifyDataSetChanged();
@@ -98,7 +97,7 @@ public class MainClaseActivity extends AppCompatActivity {
         }
 
         if (id == R.id.action_asistencias) {
-            Intent intent = new Intent(this, AsistanciasActivity.class);
+            Intent intent = new Intent(this, Asistancias.class);
             intent.putExtra("clase", clase);
             startActivity(intent);
             return true;

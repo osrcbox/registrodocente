@@ -1,33 +1,28 @@
-package com.unl.lapc.registrodocente;
+package com.unl.lapc.registrodocente.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telecom.Call;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.unl.lapc.registrodocente.adapter.ClasesMainAdapter;
+import com.unl.lapc.registrodocente.R;
 import com.unl.lapc.registrodocente.dao.ClaseDao;
 import com.unl.lapc.registrodocente.dao.EstudianteDao;
 import com.unl.lapc.registrodocente.modelo.Clase;
-import com.unl.lapc.registrodocente.modelo.ClaseEstudiante;
 import com.unl.lapc.registrodocente.modelo.Estudiante;
-import com.unl.lapc.registrodocente.modelo.PeriodoAcademico;
 
-public class EditEstudianteActivity extends AppCompatActivity {
+public class EditEstudiante extends AppCompatActivity {
 
     private EstudianteDao dao;
     private ClaseDao daoClase;
 
     private Clase clase;
     private Estudiante estudiante;
-    private ClaseEstudiante claseEstudiante;
+    //private ClaseEstudiante claseEstudiante;
 
     private EditText txtCodigo;
     private EditText txtNombres;
@@ -56,8 +51,7 @@ public class EditEstudianteActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         clase = bundle.getParcelable("clase");
-        claseEstudiante = bundle.getParcelable("claseEstudiante");
-        estudiante = claseEstudiante.getEstudiante();
+        estudiante = bundle.getParcelable("estudiante");
 
         if(estudiante.getId() > 0){
             estudiante = dao.get(estudiante.getId());
@@ -76,17 +70,17 @@ public class EditEstudianteActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_save_estudante) {
+        if (id == R.id.action_save) {
             guardarEstudiante();
             return true;
         }
 
-        if (id == R.id.action_remover_estudante) {
+        if (id == R.id.action_delete) {
             removerEstudiante();
             return true;
         }
 
-        if (id == R.id.action_cancel_estudante) {
+        if (id == R.id.action_back) {
             cancelarEdicion();
             return true;
         }
@@ -97,22 +91,18 @@ public class EditEstudianteActivity extends AppCompatActivity {
 
     public void guardarEstudiante(){
 
-        estudiante.setCodigo(txtCodigo.getText().toString());
+        estudiante.setCedula(txtCodigo.getText().toString());
         estudiante.setNombres(txtNombres.getText().toString());
         estudiante.setApellidos(txtApellidos.getText().toString());
         estudiante.setEmail(txtEmail.getText().toString());
         estudiante.setCelular(txtTelefono.getText().toString());
+        estudiante.setClase(clase);
+        estudiante.setOrden(Integer.parseInt(txtOrden.getText().toString()));
         int rbSexo = rgSexo.getCheckedRadioButtonId();
         if(rbSexo == R.id.rbHombre){
             estudiante.setSexo("Hombre");
         }else{
             estudiante.setSexo("Mujer");
-        }
-
-        if(claseEstudiante != null) {
-            claseEstudiante.setClase(clase);
-            claseEstudiante.setEstudiante(estudiante);
-            claseEstudiante.setOrden(Integer.parseInt(txtOrden.getText().toString()));
         }
 
        // if(validate()) {
@@ -123,24 +113,24 @@ public class EditEstudianteActivity extends AppCompatActivity {
                 dao.update(estudiante);
             }
 
-            if(claseEstudiante != null){
+            /*if(claseEstudiante != null){
                 daoClase.addEstudiante(claseEstudiante);
-            }
+            }*/
 
-            Intent intent = new Intent(this, MainClaseActivity.class);
+            Intent intent = new Intent(this, MainClases.class);
             intent.putExtra("clase", clase);
             startActivity(intent);
         //}
     }
 
     public void removerEstudiante(){
-        daoClase.removerEstudiante(claseEstudiante);
+        //dao.removerEstudiante(claseEstudiante);
         cancelarEdicion();
     }
 
     private void setValue() {
         if (clase != null) {
-            txtCodigo.setText(estudiante.getCodigo());
+            txtCodigo.setText(estudiante.getCedula());
             txtNombres.setText(estudiante.getNombres());
             txtApellidos.setText(estudiante.getApellidos());
             txtEmail.setText(estudiante.getEmail());
@@ -150,7 +140,7 @@ public class EditEstudianteActivity extends AppCompatActivity {
             }else{
                 rgSexo.check(R.id.rbMujer);
             }
-            txtOrden.setText(""+claseEstudiante.getOrden());
+            txtOrden.setText(""+estudiante.getOrden());
         }
     }
 
@@ -164,7 +154,7 @@ public class EditEstudianteActivity extends AppCompatActivity {
     }*/
 
     public void cancelarEdicion() {
-        Intent mIntent = new Intent(this, MainClaseActivity.class);
+        Intent mIntent = new Intent(this, MainClases.class);
         mIntent.putExtra("clase", clase);
         startActivity(mIntent);
     }

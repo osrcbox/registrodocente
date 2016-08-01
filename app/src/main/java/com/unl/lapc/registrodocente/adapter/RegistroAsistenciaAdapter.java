@@ -9,16 +9,16 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.unl.lapc.registrodocente.R;
-import com.unl.lapc.registrodocente.modelo.ClaseEstudiante;
+import com.unl.lapc.registrodocente.modelo.Estudiante;
 
 import java.util.List;
 
 /**
  * Created by Usuario on 11/07/2016.
  */
-public class RegistroAsistenciaAdapter extends ArrayAdapter<ClaseEstudiante> {
+public class RegistroAsistenciaAdapter extends ArrayAdapter<Estudiante> {
 
-    public RegistroAsistenciaAdapter(Context context, List<ClaseEstudiante> objects) {
+    public RegistroAsistenciaAdapter(Context context, List<Estudiante> objects) {
         super(context, 0, objects);
     }
 
@@ -42,10 +42,10 @@ public class RegistroAsistenciaAdapter extends ArrayAdapter<ClaseEstudiante> {
         CheckBox chk = (CheckBox) convertView.findViewById(R.id.cbEstado);
 
         // Lead actual.
-        ClaseEstudiante lead = getItem(position);
+        Estudiante lead = getItem(position);
 
 
-        name.setText(lead.getEstudiante().getNombresCompletos());
+        name.setText(lead.getNombresCompletos());
         cod.setText(""+lead.getOrden()+". ");
 
 

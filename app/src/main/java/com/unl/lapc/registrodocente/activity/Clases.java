@@ -1,4 +1,4 @@
-package com.unl.lapc.registrodocente;
+package com.unl.lapc.registrodocente.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -10,12 +10,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.unl.lapc.registrodocente.R;
 import com.unl.lapc.registrodocente.adapter.ClasesAdapter;
 import com.unl.lapc.registrodocente.dao.ClaseDao;
 import com.unl.lapc.registrodocente.modelo.Clase;
-import com.unl.lapc.registrodocente.modelo.PeriodoAcademico;
 
-public class ClasesActivity extends AppCompatActivity {
+public class Clases extends AppCompatActivity {
 
     private ListView mLeadsList;
     private ClaseDao dao;
@@ -56,7 +56,7 @@ public class ClasesActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_add_clase) {
+        if (id == R.id.action_add) {
             editAction(new Clase());
             return true;
         }
@@ -65,7 +65,7 @@ public class ClasesActivity extends AppCompatActivity {
     }
 
     private void editAction(Clase cls){
-        Intent intent = new Intent(this, EditClaseActivity.class);
+        Intent intent = new Intent(this, EditClase.class);
         intent.putExtra("clase", cls);
         startActivity(intent);
     }

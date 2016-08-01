@@ -4,7 +4,8 @@ package com.unl.lapc.registrodocente.modelo;
  * Created by Usuario on 26/07/2016.
  */
 public class NotaQuimestre {
-    private ClaseEstudiante claseEstudiante;
+
+    //private ClaseEstudiante claseEstudiante;
     private Clase clase;
     private Estudiante estudiante;
 

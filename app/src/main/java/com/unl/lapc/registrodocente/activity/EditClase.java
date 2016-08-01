@@ -1,4 +1,4 @@
-package com.unl.lapc.registrodocente;
+package com.unl.lapc.registrodocente.activity;
 
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
@@ -13,15 +13,15 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.unl.lapc.registrodocente.adapter.PeriodosAdapter;
+import com.unl.lapc.registrodocente.R;
 import com.unl.lapc.registrodocente.dao.ClaseDao;
 import com.unl.lapc.registrodocente.dao.PeriodoDao;
 import com.unl.lapc.registrodocente.modelo.Clase;
-import com.unl.lapc.registrodocente.modelo.PeriodoAcademico;
+import com.unl.lapc.registrodocente.modelo.Periodo;
 
 import java.util.List;
 
-public class EditClaseActivity extends AppCompatActivity {
+public class EditClase extends AppCompatActivity {
 
     private Clase clase = null;
     private ClaseDao dao = null;
@@ -51,7 +51,7 @@ public class EditClaseActivity extends AppCompatActivity {
             clase = dao.getClase(clase.getId());
         }
 
-        List<PeriodoAcademico> periodos = daoPeriodo.getAll();
+        List<Periodo> periodos = daoPeriodo.getAll();
 
         cmbPeriodosAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, periodos);
         cmbPeriodosAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -83,21 +83,21 @@ public class EditClaseActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_save_clase) {
-            guardarClase();
+        if (id == R.id.action_save) {
+            guardar();
             return true;
         }
 
-        if (id == R.id.action_delete_clase) {
-            eliminarPeriodo();
+        if (id == R.id.action_delete) {
+            eliminar();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void guardarClase(){
-        PeriodoAcademico per = (PeriodoAcademico)cmbPeriodos.getSelectedItem();
+    public void guardar(){
+        Periodo per = (Periodo)cmbPeriodos.getSelectedItem();
 
         clase.setNombre(txtNombreEditClase.getText().toString());
         clase.setPeriodo(per);
@@ -111,16 +111,16 @@ public class EditClaseActivity extends AppCompatActivity {
                 dao.update(clase);
             }
 
-            Intent intent = new Intent(this, ClasesActivity.class);
+            Intent intent = new Intent(this, Clases.class);
             startActivity(intent);
         }
     }
 
-    public void eliminarPeriodo(){
+    public void eliminar(){
         if(clase.getId() > 0){
             dao.deleteClase(clase);
 
-            Intent intent = new Intent(this, ClasesActivity.class);
+            Intent intent = new Intent(this, Clases.class);
             startActivity(intent);
         }else{
             Snackbar.make(getCurrentFocus(), "No se puede eliminar porque aún no ha guardado", Snackbar.LENGTH_LONG)

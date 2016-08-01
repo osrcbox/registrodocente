@@ -1,9 +1,7 @@
-package com.unl.lapc.registrodocente;
+package com.unl.lapc.registrodocente.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -12,12 +10,12 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.unl.lapc.registrodocente.adapter.ClasesAdapter;
+import com.unl.lapc.registrodocente.R;
 import com.unl.lapc.registrodocente.adapter.ClasesMainAdapter;
 import com.unl.lapc.registrodocente.dao.ClaseDao;
 import com.unl.lapc.registrodocente.modelo.Clase;
 
-public class MainActivity extends AppCompatActivity {
+public class Main extends AppCompatActivity {
 
     private ListView mLeadsList;
     private ClaseDao dao;
@@ -26,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void show(Clase cls){
-        Intent intent = new Intent(this, MainClaseActivity.class);
+        Intent intent = new Intent(this, MainClases.class);
         intent.putExtra("clase", cls);
         startActivity(intent);
     }
@@ -77,13 +76,13 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_periodos) {
-            Intent intent = new Intent(this, PeriodosActivity.class);
+            Intent intent = new Intent(this, Periodos.class);
             startActivity(intent);
             return true;
         }
 
         if (id == R.id.action_clases) {
-            Intent intent = new Intent(this, ClasesActivity.class);
+            Intent intent = new Intent(this, Clases.class);
             startActivity(intent);
             return true;
         }

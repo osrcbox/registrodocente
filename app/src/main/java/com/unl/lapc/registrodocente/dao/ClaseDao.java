@@ -2,15 +2,12 @@ package com.unl.lapc.registrodocente.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.unl.lapc.registrodocente.modelo.Clase;
-import com.unl.lapc.registrodocente.modelo.ClaseEstudiante;
 import com.unl.lapc.registrodocente.modelo.Estudiante;
-import com.unl.lapc.registrodocente.modelo.PeriodoAcademico;
+import com.unl.lapc.registrodocente.modelo.Periodo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +39,7 @@ public class ClaseDao extends DBHandler {
         db.close();
     }
 
-    public void addEstudiante(ClaseEstudiante cls) {
+    /*public void addEstudiante(ClaseEstudiante cls) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -57,39 +54,9 @@ public class ClaseDao extends DBHandler {
             db.update("clase_estudiante", values, ID + " = ?", new String[]{String.valueOf(cls.getId())});
         }
         db.close();
-    }
+    }*/
 
-    public void ordernarApellidos(Clase cls) {
-        SQLiteDatabase db = this.getWritableDatabase();
 
-        String selectQuery = "SELECT ce.id FROM clase_estudiante ce, estudiante e where ce.estudiante_id = e.id and ce.clase_id = " + cls.getId() + " order by e.apellidos asc, e.nombres asc";
-
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        List<Integer> lista = new ArrayList<>();
-
-        if (cursor.moveToFirst()) {
-
-            do {
-                lista.add(cursor.getInt(0));
-            } while (cursor.moveToNext());
-        }
-
-        int orden = 1;
-        for (int id: lista){
-            ContentValues values = new ContentValues();
-            values.put("orden", orden);
-            db.update("clase_estudiante", values, ID + " = ?", new String[]{String.valueOf(id)});
-            orden++;
-        }
-
-        db.close();
-    }
-
-    public void removerEstudiante(ClaseEstudiante cls) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete("clase_estudiante", ID + " = ?", new String[] { String.valueOf(cls.getId()) });
-        db.close();
-    }
 
     public int update(Clase clase) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -114,7 +81,7 @@ public class ClaseDao extends DBHandler {
 
         String spid = cursor.getString(3);
         if(spid != null){
-            PeriodoAcademico p = new PeriodoAcademico();
+            Periodo p = new Periodo();
             p.setId(Integer.parseInt(spid));
             contact.setPeriodo(p);
         }
@@ -132,7 +99,7 @@ public class ClaseDao extends DBHandler {
     public List<Clase> getAll() {
         List<Clase> shopList = new ArrayList<>();
 
-        String selectQuery = "SELECT c.id, c.nombre, c.activa, c.periodo_id, p.nombre periodo_nombre FROM clase c, periodoAcademico p where c.periodo_id = p.id";
+        String selectQuery = "SELECT c.id, c.nombre, c.activa, c.periodo_id, p.nombre periodo_nombre FROM clase c, periodo p where c.periodo_id = p.id";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -143,7 +110,7 @@ public class ClaseDao extends DBHandler {
                 cls.setNombre(cursor.getString(1));
                 cls.setActiva(cursor.getInt(2) > 0);
 
-                PeriodoAcademico p = new PeriodoAcademico(cursor.getInt(3), cursor.getString(4));
+                Periodo p = new Periodo(cursor.getInt(3), cursor.getString(4));
                 cls.setPeriodo(p);
 
                 shopList.add(cls);
@@ -153,35 +120,12 @@ public class ClaseDao extends DBHandler {
         return shopList;
     }
 
-    public List<ClaseEstudiante> getEstudiantes(Clase clase) {
-        List<ClaseEstudiante> shopList = new ArrayList<>();
 
-        String selectQuery = "SELECT e.id estudiante_id, e.codigo, e.nombres, e.apellidos, ce.id, ce.orden FROM clase_estudiante ce, estudiante e where ce.estudiante_id = e.id and ce.clase_id = " + clase.getId() + " order by ce.orden asc";
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                ClaseEstudiante cls = new ClaseEstudiante();
-                cls.setClase(clase);
-
-                Estudiante e = new Estudiante(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3));
-                cls.setEstudiante(e);
-
-                cls.setId(cursor.getInt(4));
-                cls.setOrden(cursor.getInt(5));
-
-                shopList.add(cls);
-            } while (cursor.moveToNext());
-        }
-
-        return shopList;
-    }
 
     public List<Clase> getMainClases() {
         List<Clase> shopList = new ArrayList<>();
 
-        String selectQuery = "SELECT c.id, c.nombre, c.activa, (select count(ce.id) from clase_estudiante ce where ce.clase_id = c.id) as numeroEstudiantes, periodo_id FROM clase c WHERE c.activa = 1";
+        String selectQuery = "SELECT c.id, c.nombre, c.activa, (select count(ce.id) from estudiante ce where ce.clase_id = c.id) as numeroEstudiantes, periodo_id FROM clase c WHERE c.activa = 1";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -193,7 +137,7 @@ public class ClaseDao extends DBHandler {
                 cls.setActiva(cursor.getInt(2) > 0);
                 cls.setNumeroEstudiantes(cursor.getInt(3));
 
-                PeriodoAcademico p = new PeriodoAcademico();
+                Periodo p = new Periodo();
                 p.setId(cursor.getInt(3));
                 cls.setPeriodo(p);
                 shopList.add(cls);

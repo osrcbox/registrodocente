@@ -8,16 +8,21 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.unl.lapc.registrodocente.R;
-import com.unl.lapc.registrodocente.modelo.PeriodoAcademico;
+import com.unl.lapc.registrodocente.modelo.Periodo;
+import com.unl.lapc.registrodocente.util.Convert;
 
 import java.util.List;
 
 /**
  * Created by Usuario on 11/07/2016.
  */
-public class PeriodosAdapter extends ArrayAdapter<PeriodoAcademico> {
-    public PeriodosAdapter(Context context, List<PeriodoAcademico> objects) {
+public class PeriodosAdapter extends ArrayAdapter<Periodo> {
+
+    private Context context;
+
+    public PeriodosAdapter(Context context, List<Periodo> objects) {
         super(context, 0, objects);
+        this.context = context;
     }
 
     @Override
@@ -33,18 +38,12 @@ public class PeriodosAdapter extends ArrayAdapter<PeriodoAcademico> {
                     false);
         }
 
-        // Referencias UI.
+        TextView txtNombre = (TextView) convertView.findViewById(R.id.txtNombre);
+        TextView txtDesc = (TextView) convertView.findViewById(R.id.txtDesc);
 
-        TextView name = (TextView) convertView.findViewById(R.id.txtNombre);
-
-        // Lead actual.
-        PeriodoAcademico lead = getItem(position);
-
-        // Setup.
-        //Glide.with(getContext()).load(lead.getImage()).into(avatar);
-        name.setText(lead.getNombre());
-        //title.setText(lead.getTitle());
-        //company.setText(lead.getCompany());
+        final Periodo lead = getItem(position);
+        txtNombre.setText(lead.getNombre());
+        txtDesc.setText(String.format("%s - %s", Convert.toShortDateString(lead.getInicio()), Convert.toShortDateString(lead.getFin())));
 
         return convertView;
     }

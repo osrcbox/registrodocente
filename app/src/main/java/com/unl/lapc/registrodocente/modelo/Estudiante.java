@@ -10,13 +10,17 @@ public class Estudiante implements Parcelable{
 
     private int id;
 
-    private String codigo;
+    private String cedula;
     private String nombres;
     private String apellidos;
     private String sexo = "Hombre";
 
     private String email;
     private String celular;
+
+    private int orden;
+
+    private Clase clase;
 
     public Estudiante(){
     }
@@ -25,38 +29,46 @@ public class Estudiante implements Parcelable{
         this.id = id;
     }
 
+    public Estudiante(Clase clase){
+        this.clase = clase;
+    }
+
     public Estudiante(int id, String nombres, String apellidos){
         this.setId(id);
         this.setNombres(nombres);
         this.setApellidos(apellidos);
     }
 
-    public Estudiante(int id, String codigo, String nombres, String apellidos){
+    public Estudiante(int id, String cedula, String nombres, String apellidos){
         this.setId(id);
-        this.setCodigo(codigo);
+        this.setCedula(cedula);
         this.setNombres(nombres);
         this.setApellidos(apellidos);
     }
 
-    public Estudiante(int id, String codigo, String nombres, String apellidos, String email, String celular, String sexo){
+    public Estudiante(int id, String cedula, String nombres, String apellidos, String email, String celular, String sexo, int orden, Clase clase){
         this.setId(id);
-        this.setCodigo(codigo);
+        this.setCedula(cedula);
         this.setNombres(nombres);
         this.setApellidos(apellidos);
         this.setEmail(email);
         this.setCelular(celular);
         this.setSexo(sexo);
+        this.setOrden(orden);
+        this.clase = clase;
     }
 
     private Estudiante(Parcel in) {
         super();
         this.setId(in.readInt());
-        this.setCodigo(in.readString());
+        this.setCedula(in.readString());
         this.setNombres(in.readString());
         this.setApellidos(in.readString());
         this.setSexo(in.readString());
         this.setEmail(in.readString());
         this.setCelular(in.readString());
+        this.setOrden(in.readInt());
+        this.setClase(new Clase(in.readInt()));
     }
 
     public String getNombresCompletos() {
@@ -84,12 +96,14 @@ public class Estudiante implements Parcelable{
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(getId());
-        parcel.writeString(getCodigo());
+        parcel.writeString(getCedula());
         parcel.writeString(getNombres());
         parcel.writeString(getApellidos());
         parcel.writeString(getSexo());
         parcel.writeString(getEmail());
         parcel.writeString(getCelular());
+        parcel.writeInt(getOrden());
+        parcel.writeInt(getClase().getId());
     }
 
     public static final Creator<Estudiante> CREATOR = new Creator<Estudiante>() {
@@ -101,12 +115,12 @@ public class Estudiante implements Parcelable{
         }
     };
 
-    public String getCodigo() {
-        return codigo;
+    public String getCedula() {
+        return cedula;
     }
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
     }
 
     public String getNombres() {
@@ -147,5 +161,21 @@ public class Estudiante implements Parcelable{
 
     public void setSexo(String sexo) {
         this.sexo = sexo;
+    }
+
+    public int getOrden() {
+        return orden;
+    }
+
+    public void setOrden(int orden) {
+        this.orden = orden;
+    }
+
+    public Clase getClase() {
+        return clase;
+    }
+
+    public void setClase(Clase clase) {
+        this.clase = clase;
     }
 }

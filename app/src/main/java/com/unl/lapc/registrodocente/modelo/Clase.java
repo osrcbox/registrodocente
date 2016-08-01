@@ -11,7 +11,7 @@ public class Clase implements Parcelable{
     private int id;
     private String nombre;
     private boolean activa;
-    private PeriodoAcademico periodo;
+    private Periodo periodo;
 
     //No persistibles
     private int numeroEstudiantes;
@@ -34,6 +34,7 @@ public class Clase implements Parcelable{
         this.id = in.readInt();
         this.nombre = in.readString();
         this.activa = in.readInt() > 0;
+        this.setPeriodo(new Periodo(in.readInt()));
     }
 
     @Override
@@ -67,6 +68,7 @@ public class Clase implements Parcelable{
         parcel.writeInt(getId());
         parcel.writeString(getNombre());
         parcel.writeInt(isActiva() ? 1 : 0);
+        parcel.writeInt(getPeriodo().getId());
     }
 
     public static final Creator<Clase> CREATOR = new Creator<Clase>() {
@@ -79,11 +81,11 @@ public class Clase implements Parcelable{
         }
     };
 
-    public PeriodoAcademico getPeriodo() {
+    public Periodo getPeriodo() {
         return periodo;
     }
 
-    public void setPeriodo(PeriodoAcademico periodo) {
+    public void setPeriodo(Periodo periodo) {
         this.periodo = periodo;
     }
 

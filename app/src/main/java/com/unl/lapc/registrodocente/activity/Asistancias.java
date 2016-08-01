@@ -1,7 +1,5 @@
-package com.unl.lapc.registrodocente;
+package com.unl.lapc.registrodocente.activity;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
@@ -10,15 +8,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TableLayout;
@@ -26,13 +20,15 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
-import com.unl.lapc.registrodocente.adapter.ClaseEstudianteAdapter;
-import com.unl.lapc.registrodocente.adapter.RegistroAsistenciaAdapter;
+import com.unl.lapc.registrodocente.R;
 import com.unl.lapc.registrodocente.dao.AsistenciaDao;
+import com.unl.lapc.registrodocente.dao.CalendarioDao;
 import com.unl.lapc.registrodocente.dao.ClaseDao;
+import com.unl.lapc.registrodocente.dao.EstudianteDao;
 import com.unl.lapc.registrodocente.modelo.Asistencia;
+import com.unl.lapc.registrodocente.modelo.Calendario;
 import com.unl.lapc.registrodocente.modelo.Clase;
-import com.unl.lapc.registrodocente.modelo.ClaseEstudiante;
+import com.unl.lapc.registrodocente.modelo.Estudiante;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -40,19 +36,22 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class AsistanciasActivity extends AppCompatActivity {
+public class Asistancias extends AppCompatActivity {
 
     private Clase clase;
 
     //private ListView mLeadsList;
     private AsistenciaDao dao;
     private ClaseDao daoClase;
+    private EstudianteDao daoEstudiante;
+    private CalendarioDao daoCalendario;
 
     //private RegistroAsistenciaAdapter mLeadsAdapter;
     private Date fecha = new Date();
     private TableLayout tlAsistencias;
     private List<Asistencia> asistencias;
-    private List<ClaseEstudiante> estudiantes;
+    private List<Estudiante> estudiantes;
+    private Calendario calendario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +60,8 @@ public class AsistanciasActivity extends AppCompatActivity {
 
         dao = new AsistenciaDao(this);
         daoClase = new ClaseDao(this);
+        daoEstudiante = new EstudianteDao(this);
+        daoCalendario = new CalendarioDao(this);
 
         Bundle bundle = getIntent().getExtras();
         clase = bundle.getParcelable("clase");
@@ -68,13 +69,14 @@ public class AsistanciasActivity extends AppCompatActivity {
         //mLeadsList = (ListView) findViewById(R.id.listViewAsistencias);
         //mLeadsAdapter = new RegistroAsistenciaAdapter(getApplicationContext(), dao.getEstudiantes(clase));
         //mLeadsList.setAdapter(mLeadsAdapter);
-        estudiantes = daoClase.getEstudiantes(clase);
+        estudiantes = daoEstudiante.getEstudiantes(clase);
 
         FloatingActionButton btnAsiToday = (FloatingActionButton) findViewById(R.id.btnAsiToday);
         btnAsiToday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mostrarDia(fecha, true);
+                Calendario newCal = daoCalendario.get(clase.getPeriodo(), fecha);
+                registrar(newCal);
             }
         });
 
@@ -96,7 +98,13 @@ public class AsistanciasActivity extends AppCompatActivity {
 
         tlAsistencias = (TableLayout)findViewById(R.id.tlAsistencias);
 
-        mostrarDia(new Date(), false);
+        calendario = daoCalendario.get(clase.getPeriodo(), new Date());
+        if(calendario != null) {
+            mostrarDia(calendario);
+        }else{
+            Snackbar.make(tlAsistencias, "Este día no está registrdo en el calendario académico", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            setTitle("Asistencias: " + clase.getNombre());
+        }
     }
 
     @Override
@@ -114,8 +122,8 @@ public class AsistanciasActivity extends AppCompatActivity {
             return true;
         }
 
-        if (id == R.id.action_cancel_asistencia) {
-            Intent intent = new Intent(this, MainClaseActivity.class);
+        if (id == R.id.action_back) {
+            Intent intent = new Intent(this, MainClases.class);
             intent.putExtra("clase", clase);
             startActivity(intent);
             return true;
@@ -144,18 +152,27 @@ public class AsistanciasActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int id) {
                 GregorianCalendar calendarBeg=new GregorianCalendar(dp.getYear(),dp.getMonth(),dp.getDayOfMonth());
                 Date fecha=calendarBeg.getTime();
-                mostrarDia(fecha, true);
-                dialog.dismiss();
+                Calendario newCal = daoCalendario.get(clase.getPeriodo(), fecha);
+                if(newCal != null) {
+                    registrar(newCal);
+                    mostrarDia(newCal);
+                    dialog.dismiss();
+                }else{
+                    Snackbar.make(null, "Este día no está registrdo en el calendario académico", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                }
             }
         });
 
-        builder.setNeutralButton("Borar", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton("Borrar", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 GregorianCalendar calendarBeg=new GregorianCalendar(dp.getYear(),dp.getMonth(),dp.getDayOfMonth());
                 Date fecha=calendarBeg.getTime();
-                dao.borrarAsistencias(clase,fecha);
-                mostrarDia(fecha, false);
-                dialog.dismiss();
+                Calendario newCal = daoCalendario.get(clase.getPeriodo(), fecha);
+                if(newCal != null) {
+                    dao.borrarAsistencias(clase, fecha);
+                    mostrarDia(newCal);
+                    dialog.dismiss();
+                }
             }
         });
 
@@ -169,34 +186,57 @@ public class AsistanciasActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private void mostrarDia(Date fecha, boolean add){
-        this.fecha = fecha;
+    private void registrar(Calendario calendario){
+        if(calendario != null) {
+            if(calendario.getEstado().equals(Calendario.ESTADO_ACTIVO)){
+
+                asistencias = dao.getAsistencias(clase, fecha);
+                boolean any = asistencias.size() > 0;
+
+                for(Estudiante c : estudiantes) {
+                    Asistencia asi = null;
+
+                    for (Asistencia ra : asistencias) {
+                        if (ra.getEstudiante().getId() == c.getId()) {
+                            asi = ra;
+                        }
+                    }
+
+                    if (asi == null) {
+                        asi = new Asistencia(0, fecha, c.getClase(), c, calendario);
+                        asi.setEstado(any ? "F" : "P");
+                        dao.add(asi);
+                    }
+                }
+
+                mostrarDia(calendario);
+            }else{
+                Snackbar.make(tlAsistencias, "Este día no está registrdo en el calendario académico como feriado", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
+        }else{
+            Snackbar.make(tlAsistencias, "Este día no está registrdo en el calendario académico", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        }
+    }
+
+    private void mostrarDia(Calendario calendario){
         SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
-        setTitle("Asistencias: " + clase.getNombre() +" (" + sd.format(fecha) + ")");
+        this.fecha = calendario.getFecha();
+        setTitle("Asistencias: " + clase.getNombre() +" (" + sd.format(fecha)+ " - " + calendario.getEstado() + ")");
+
         tlAsistencias.removeAllViews();
         asistencias = dao.getAsistencias(clase, fecha);
-        boolean existAny = false;
 
         int i = 0;
-        for(ClaseEstudiante c : estudiantes){
+        for(Estudiante c : estudiantes){
             i++;
             TableRow row = new TableRow(getApplicationContext());
             row.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
-            Asistencia a = null;
+            Asistencia asi = null;
+
             for (Asistencia ra : asistencias){
-                if(ra.getClaseEstudiante().getId() == c.getId()){
-                    a = ra;
-                    existAny = true;
-                }
-            }
-            if(a == null){
-                if(add || existAny) {
-                    a = new Asistencia(0, fecha, c, c.getClase(), c.getEstudiante());
-                    if(existAny){
-                        a.setEstado("F");
-                    }
-                    dao.add(a);
+                if(ra.getEstudiante().getId() == c.getId()){
+                    asi = ra;
                 }
             }
 
@@ -213,10 +253,10 @@ public class AsistanciasActivity extends AppCompatActivity {
             tv1.setGravity(Gravity.LEFT);
             tv1.setTextSize(18);
             tv1.setPadding(0, 5, 0, 5);
-            tv1.setText(c.getEstudiante().getNombresCompletos());
+            tv1.setText(c.getNombresCompletos());
             row.addView(tv1);
 
-            if(a!=null) {
+            if(asi!=null) {
 
                 RadioButton rb1 = new RadioButton(this);
                 rb1.setText("P");
@@ -232,15 +272,15 @@ public class AsistanciasActivity extends AppCompatActivity {
                 //row.addView(rb3);
 
                 RadioGroup rg = new RadioGroup(this);
-                rg.setTag(a);
+                rg.setTag(asi);
                 rg.setOrientation(LinearLayout.HORIZONTAL);
                 rg.addView(rb1);
                 rg.addView(rb2);
                 rg.addView(rb3);
 
-                if (a.getEstado().equals("P")) {
+                if (asi.getEstado().equals("P")) {
                     rg.check(rb1.getId());
-                } else if (a.getEstado().equals("F")) {
+                } else if (asi.getEstado().equals("F")) {
                     rg.check(rb2.getId());
                 } else {
                     rg.check(rb3.getId());
@@ -267,17 +307,26 @@ public class AsistanciasActivity extends AppCompatActivity {
     }
 
     private void next(){
-        Calendar c = GregorianCalendar.getInstance();
-        c.setTime(fecha);
-        c.add(Calendar.DAY_OF_MONTH, 1);
-        mostrarDia(c.getTime(), false);
+        //Calendar c = GregorianCalendar.getInstance();
+        //c.setTime(fecha);
+        //c.add(Calendar.DAY_OF_MONTH, 1);
+
+        Calendario newcal = daoCalendario.getNext(clase.getPeriodo(), fecha);
+
+        if(newcal != null) {
+            mostrarDia(newcal);
+        }
     }
 
     private void prev(){
-        Calendar c = GregorianCalendar.getInstance();
-        c.setTime(fecha);
-        c.add(Calendar.DAY_OF_MONTH, -1);
-        mostrarDia(c.getTime(), false);
+        //Calendar c = GregorianCalendar.getInstance();
+        //c.setTime(fecha);
+        //c.add(Calendar.DAY_OF_MONTH, -1);
+
+        Calendario newcal = daoCalendario.getPrevius(clase.getPeriodo(), fecha);
+        if(newcal != null) {
+            mostrarDia(newcal);
+        }
     }
 
     /*
