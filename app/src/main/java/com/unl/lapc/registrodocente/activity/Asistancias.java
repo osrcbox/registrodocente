@@ -123,7 +123,7 @@ public class Asistancias extends AppCompatActivity {
         }
 
         if (id == R.id.action_back) {
-            Intent intent = new Intent(this, MainClases.class);
+            Intent intent = new Intent(this, MainEstudiantes.class);
             intent.putExtra("clase", clase);
             startActivity(intent);
             return true;

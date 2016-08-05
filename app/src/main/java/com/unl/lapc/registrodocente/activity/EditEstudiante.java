@@ -117,7 +117,7 @@ public class EditEstudiante extends AppCompatActivity {
                 daoClase.addEstudiante(claseEstudiante);
             }*/
 
-            Intent intent = new Intent(this, MainClases.class);
+            Intent intent = new Intent(this, MainEstudiantes.class);
             intent.putExtra("clase", clase);
             startActivity(intent);
         //}
@@ -154,7 +154,7 @@ public class EditEstudiante extends AppCompatActivity {
     }*/
 
     public void cancelarEdicion() {
-        Intent mIntent = new Intent(this, MainClases.class);
+        Intent mIntent = new Intent(this, MainEstudiantes.class);
         mIntent.putExtra("clase", clase);
         startActivity(mIntent);
     }

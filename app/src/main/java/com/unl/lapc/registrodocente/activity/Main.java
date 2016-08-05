@@ -55,7 +55,7 @@ public class Main extends AppCompatActivity {
     }
 
     private void show(Clase cls){
-        Intent intent = new Intent(this, MainClases.class);
+        Intent intent = new Intent(this, MainEstudiantes.class);
         intent.putExtra("clase", cls);
         startActivity(intent);
     }

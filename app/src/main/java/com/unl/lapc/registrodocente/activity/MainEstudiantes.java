@@ -17,7 +17,7 @@ import com.unl.lapc.registrodocente.dao.EstudianteDao;
 import com.unl.lapc.registrodocente.modelo.Clase;
 import com.unl.lapc.registrodocente.modelo.Estudiante;
 
-public class MainClases extends AppCompatActivity {
+public class MainEstudiantes extends AppCompatActivity {
 
     private ListView mLeadsList;
     private ClaseDao dao;
@@ -28,7 +28,7 @@ public class MainClases extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_clase);
+        setContentView(R.layout.activity_main_estudiantes);
 
         mLeadsList = (ListView) findViewById(R.id.listView);
 
@@ -78,7 +78,7 @@ public class MainClases extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main_clase, menu);
+        getMenuInflater().inflate(R.menu.menu_main_estudiantes, menu);
         return true;
     }
 
@@ -98,6 +98,13 @@ public class MainClases extends AppCompatActivity {
 
         if (id == R.id.action_asistencias) {
             Intent intent = new Intent(this, Asistancias.class);
+            intent.putExtra("clase", clase);
+            startActivity(intent);
+            return true;
+        }
+
+        if (id == R.id.action_notas) {
+            Intent intent = new Intent(this, MainNotas.class);
             intent.putExtra("clase", clase);
             startActivity(intent);
             return true;
