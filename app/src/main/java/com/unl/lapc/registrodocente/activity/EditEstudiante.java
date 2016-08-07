@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 
 import com.unl.lapc.registrodocente.R;
+import com.unl.lapc.registrodocente.fragment.FragmentEstudiantes;
 import com.unl.lapc.registrodocente.dao.ClaseDao;
 import com.unl.lapc.registrodocente.dao.EstudianteDao;
 import com.unl.lapc.registrodocente.modelo.Clase;
@@ -113,15 +114,10 @@ public class EditEstudiante extends AppCompatActivity {
             } else {
                 dao.update(estudiante);
             }
-
-            /*if(claseEstudiante != null){
-                daoClase.addEstudiante(claseEstudiante);
-            }*/
-
-            Intent intent = new Intent(this, MainEstudiantes.class);
-            intent.putExtra("clase", clase);
-            startActivity(intent);
         //}
+
+        cancelarEdicion();
+
     }
 
     public void removerEstudiante(){
@@ -155,7 +151,7 @@ public class EditEstudiante extends AppCompatActivity {
     }*/
 
     public void cancelarEdicion() {
-        Intent mIntent = new Intent(this, MainEstudiantes.class);
+        Intent mIntent = new Intent(this, MainClase.class);
         mIntent.putExtra("clase", clase);
         startActivity(mIntent);
     }

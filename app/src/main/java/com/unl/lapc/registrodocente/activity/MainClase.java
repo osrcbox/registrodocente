@@ -1,10 +1,7 @@
 package com.unl.lapc.registrodocente.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,31 +16,35 @@ import com.unl.lapc.registrodocente.dao.AcreditableDao;
 import com.unl.lapc.registrodocente.dao.ClaseDao;
 import com.unl.lapc.registrodocente.dao.EstudianteDao;
 import com.unl.lapc.registrodocente.dao.ParcialDao;
+import com.unl.lapc.registrodocente.dao.PeriodoDao;
 import com.unl.lapc.registrodocente.dao.QuimestreDao;
+import com.unl.lapc.registrodocente.fragment.FragmentAsistancias;
+import com.unl.lapc.registrodocente.fragment.FragmentEstudiantes;
 import com.unl.lapc.registrodocente.fragment.FragmentResumenNotas;
 import com.unl.lapc.registrodocente.R;
 import com.unl.lapc.registrodocente.fragment.FragmentResumenNotasParcial;
 import com.unl.lapc.registrodocente.fragment.FragmentResumenNotasQuimestre;
 import com.unl.lapc.registrodocente.modelo.Clase;
-import com.unl.lapc.registrodocente.modelo.Estudiante;
 import com.unl.lapc.registrodocente.modelo.Parcial;
+import com.unl.lapc.registrodocente.modelo.Periodo;
 import com.unl.lapc.registrodocente.modelo.Quimestre;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainNotas extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainClase extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private PeriodoDao periodoDao;
     private ClaseDao claseDao;
     private AcreditableDao daoAcreditable;
     private QuimestreDao quimestreDao;
     private ParcialDao parcialDao;
     private EstudianteDao estudianteDao;
 
-
-
     private Clase clase;
+    private Periodo periodo;
+
     private Map<MenuItem, Object> menuItems = new HashMap<>();
 
     @Override
@@ -52,15 +53,6 @@ public class MainNotas extends AppCompatActivity implements NavigationView.OnNav
         setContentView(R.layout.activity_main_notas_nav);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -74,6 +66,7 @@ public class MainNotas extends AppCompatActivity implements NavigationView.OnNav
         //Custom init
         Menu menu = navigationView.getMenu();
 
+        periodoDao = new PeriodoDao(this);
         claseDao = new ClaseDao(this);
         daoAcreditable = new AcreditableDao(this);
         quimestreDao = new QuimestreDao(this);
@@ -82,11 +75,13 @@ public class MainNotas extends AppCompatActivity implements NavigationView.OnNav
 
         Bundle bundle = getIntent().getExtras();
         clase = bundle.getParcelable("clase");
+        periodo = periodoDao.get(clase.getPeriodo().getId());
 
         TextView txtNavSubtitle = (TextView)findViewById(R.id.txtNavSubtitle);
-        //txtNavSubtitle.setText(String.format("%s (%s)", clase.getNombre(), clase.getPeriodo().getNombre()));
+        //txtNavSubtitle.setText(String.format("%s (%s)", clase.getNombre(), periodo.getNombre()));
+
         cargarMenu(menu);
-        cargarResumenNotas();
+        cargarEstudiantes();
     }
 
     private void cargarMenu(Menu menu){
@@ -113,6 +108,30 @@ public class MainNotas extends AppCompatActivity implements NavigationView.OnNav
         }
     }
 
+    private void cargarEstudiantes(){
+        FragmentEstudiantes fragment = new FragmentEstudiantes();
+
+        Bundle args = new Bundle();
+        args.putParcelable("clase", clase);
+        fragment.setArguments(args);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+        getSupportActionBar().setTitle(clase.getNombre() + ": Estudiantes");
+    }
+
+    private void cargarAsistencias(){
+        FragmentAsistancias fragment = new FragmentAsistancias();
+
+        Bundle args = new Bundle();
+        args.putParcelable("clase", clase);
+        fragment.setArguments(args);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+        getSupportActionBar().setTitle(clase.getNombre() + ": Asistencias");
+    }
+
     private void cargarResumenNotas(){
         FragmentResumenNotas fragment = new FragmentResumenNotas();
 
@@ -122,7 +141,7 @@ public class MainNotas extends AppCompatActivity implements NavigationView.OnNav
 
         getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-        getSupportActionBar().setTitle("Resumen notas");
+        getSupportActionBar().setTitle(clase.getNombre() + ": Resumen notas");
     }
 
     private void cargarResumenNotasQuimestre(Quimestre quimestre){
@@ -135,7 +154,7 @@ public class MainNotas extends AppCompatActivity implements NavigationView.OnNav
 
         getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-        getSupportActionBar().setTitle("Resumen notas " + quimestre.getNombre());
+        getSupportActionBar().setTitle(clase.getNombre() + ": " + quimestre.getNombre());
     }
 
     private void cargarResumenNotasParcial(Parcial parcial){
@@ -148,7 +167,7 @@ public class MainNotas extends AppCompatActivity implements NavigationView.OnNav
 
         getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
 
-        getSupportActionBar().setTitle("Resumen notas " + parcial.getNombre());
+        getSupportActionBar().setTitle(clase.getNombre() + ": " + parcial.getNombre());
     }
 
     @Override
@@ -164,7 +183,7 @@ public class MainNotas extends AppCompatActivity implements NavigationView.OnNav
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main_notas, menu);
+        getMenuInflater().inflate(R.menu.menu_main_clase, menu);
         return true;
     }
 
@@ -175,8 +194,9 @@ public class MainNotas extends AppCompatActivity implements NavigationView.OnNav
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_back) {
+            Intent intent = new Intent(this, Main.class);
+            startActivity(intent);
             return true;
         }
 
@@ -194,8 +214,16 @@ public class MainNotas extends AppCompatActivity implements NavigationView.OnNav
         int id = item.getItemId();
         Object tag = menuItems.get(item);
 
-        if(id == R.id.nav_resumen){
+        if(id == R.id.nav_estudiantes){
+            cargarEstudiantes();
+        }
+
+        if(id == R.id.nav_notas){
             cargarResumenNotas();
+        }
+
+        if(id == R.id.nav_asistencias){
+            cargarAsistencias();
         }
 
         if(tag instanceof Quimestre){
@@ -205,30 +233,6 @@ public class MainNotas extends AppCompatActivity implements NavigationView.OnNav
         if(tag instanceof Parcial){
             cargarResumenNotasParcial((Parcial)tag);
         }
-
-        //if (id == R.id.nav_camera) {
-            // Handle the camera action
-            //fragment = new FragmentResumenNotas();
-            //fragmentTransaction = true;
-        /*} else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }*/
-
-        //if(fragmentTransaction) {
-            /*getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, fragment)
-                    .commit();*/
-
-
-        //}
 
         item.setChecked(true);
 

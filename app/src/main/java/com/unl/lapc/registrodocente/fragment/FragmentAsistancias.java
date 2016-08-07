@@ -1,16 +1,18 @@
-package com.unl.lapc.registrodocente.activity;
+package com.unl.lapc.registrodocente.fragment;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -21,6 +23,7 @@ import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
 import com.unl.lapc.registrodocente.R;
+import com.unl.lapc.registrodocente.activity.MainClase;
 import com.unl.lapc.registrodocente.dao.AsistenciaDao;
 import com.unl.lapc.registrodocente.dao.CalendarioDao;
 import com.unl.lapc.registrodocente.dao.ClaseDao;
@@ -36,7 +39,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class Asistancias extends AppCompatActivity {
+public class FragmentAsistancias extends Fragment {
 
     private Clase clase;
 
@@ -54,16 +57,20 @@ public class Asistancias extends AppCompatActivity {
     private Calendario calendario;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_asistencias);
+    //protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //super.onCreate(savedInstanceState);
+        //setContentView(R.layout.fragment_asistencias);
 
-        dao = new AsistenciaDao(this);
-        daoClase = new ClaseDao(this);
-        daoEstudiante = new EstudianteDao(this);
-        daoCalendario = new CalendarioDao(this);
+        View view = inflater.inflate(R.layout.fragment_asistencias, container, false);
+        setHasOptionsMenu(true);
 
-        Bundle bundle = getIntent().getExtras();
+        dao = new AsistenciaDao(getContext());
+        daoClase = new ClaseDao(getContext());
+        daoEstudiante = new EstudianteDao(getContext());
+        daoCalendario = new CalendarioDao(getContext());
+
+        Bundle bundle = getArguments();
         clase = bundle.getParcelable("clase");
 
         //mLeadsList = (ListView) findViewById(R.id.listViewAsistencias);
@@ -71,7 +78,7 @@ public class Asistancias extends AppCompatActivity {
         //mLeadsList.setAdapter(mLeadsAdapter);
         estudiantes = daoEstudiante.getEstudiantes(clase);
 
-        FloatingActionButton btnAsiToday = (FloatingActionButton) findViewById(R.id.btnAsiToday);
+        FloatingActionButton btnAsiToday = (FloatingActionButton) view.findViewById(R.id.btnAsiToday);
         btnAsiToday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,7 +87,7 @@ public class Asistancias extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton btnAsiNext = (FloatingActionButton) findViewById(R.id.btnAsiNext);
+        FloatingActionButton btnAsiNext = (FloatingActionButton) view.findViewById(R.id.btnAsiNext);
         btnAsiNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,7 +95,7 @@ public class Asistancias extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton btnAsiPrev = (FloatingActionButton) findViewById(R.id.btnAsiPrev);
+        FloatingActionButton btnAsiPrev = (FloatingActionButton) view.findViewById(R.id.btnAsiPrev);
         btnAsiPrev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,21 +103,24 @@ public class Asistancias extends AppCompatActivity {
             }
         });
 
-        tlAsistencias = (TableLayout)findViewById(R.id.tlAsistencias);
+        tlAsistencias = (TableLayout) view.findViewById(R.id.tlAsistencias);
 
         calendario = daoCalendario.get(clase.getPeriodo(), new Date());
-        if(calendario != null) {
+        if (calendario != null) {
             mostrarDia(calendario);
-        }else{
-            Snackbar.make(tlAsistencias, "Este día no está registrdo en el calendario académico", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-            setTitle("Asistencias: " + clase.getNombre());
+        } else {
+            //Snackbar.make(getView(), "Este día no está registrdo en el calendario académico", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            getActivity().setTitle("Asistencias: " + clase.getNombre());
         }
+
+        return view;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_asistencias, menu);
-        return true;
+    //public boolean onCreateOptionsMenu(Menu menu) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_asistencias, menu);
     }
 
     @Override
@@ -122,22 +132,15 @@ public class Asistancias extends AppCompatActivity {
             return true;
         }
 
-        if (id == R.id.action_back) {
-            Intent intent = new Intent(this, MainEstudiantes.class);
-            intent.putExtra("clase", clase);
-            startActivity(intent);
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
     DatePicker dp;
 
     private void showDialogToday(){
-        View myView = View.inflate(this, R.layout.content_dlg_periodo_clase, null);
+        View myView = View.inflate(getContext(), R.layout.content_dlg_periodo_clase, null);
 
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
         builder.setView(myView);
         builder.setTitle("Asistencia del día");
         builder.setCancelable(false);
@@ -221,7 +224,8 @@ public class Asistancias extends AppCompatActivity {
     private void mostrarDia(Calendario calendario){
         SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
         this.fecha = calendario.getFecha();
-        setTitle("Asistencias: " + clase.getNombre() +" (" + sd.format(fecha)+ " - " + calendario.getEstado() + ")");
+
+        ((MainClase)getActivity()).getSupportActionBar().setTitle(clase.getNombre() + ": Asistencias (" + sd.format(fecha)+ " - " + calendario.getEstado() + ")");
 
         tlAsistencias.removeAllViews();
         asistencias = dao.getAsistencias(clase, fecha);
@@ -229,7 +233,7 @@ public class Asistancias extends AppCompatActivity {
         int i = 0;
         for(Estudiante c : estudiantes){
             i++;
-            TableRow row = new TableRow(this);
+            TableRow row = new TableRow(getContext());
             row.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
             Asistencia asi = null;
@@ -240,7 +244,7 @@ public class Asistancias extends AppCompatActivity {
                 }
             }
 
-            TextView tv = new TextView(this);
+            TextView tv = new TextView(getContext());
             tv.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             tv.setGravity(Gravity.CENTER);
             tv.setTextSize(18);
@@ -248,7 +252,7 @@ public class Asistancias extends AppCompatActivity {
             tv.setText(c.getOrden() + ". ");
             row.addView(tv);
 
-            TextView tv1 = new TextView(this);
+            TextView tv1 = new TextView(getContext());
             tv1.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             tv1.setGravity(Gravity.LEFT);
             tv1.setTextSize(18);
@@ -258,20 +262,20 @@ public class Asistancias extends AppCompatActivity {
 
             if(asi!=null) {
 
-                RadioButton rb1 = new RadioButton(this);
+                RadioButton rb1 = new RadioButton(getContext());
                 rb1.setText("P");
                 //row.addView(rb1);
 
-                RadioButton rb2 = new RadioButton(this);
+                RadioButton rb2 = new RadioButton(getContext());
                 rb2.setText("F");
                 //row.addView(rb2);
 
 
-                RadioButton rb3 = new RadioButton(this);
+                RadioButton rb3 = new RadioButton(getContext());
                 rb3.setText("J");
                 //row.addView(rb3);
 
-                RadioGroup rg = new RadioGroup(this);
+                RadioGroup rg = new RadioGroup(getContext());
                 rg.setTag(asi);
                 rg.setOrientation(LinearLayout.HORIZONTAL);
                 rg.addView(rb1);

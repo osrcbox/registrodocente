@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,18 +8,15 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".activity.MainEstudiantes">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".fragment.FragmentEstudiantes"
+    tools:showIn="@layout/fragment_main_estudiantes">
 
-    <include layout="@layout/content_main_estudiantes"
-        android:id="@+id/include" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btnAddEstudiante"
+    <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:src="@android:drawable/ic_menu_add"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/include"
-        android:layout_alignEnd="@+id/include" />
+        android:id="@+id/listView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

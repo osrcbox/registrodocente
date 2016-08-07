@@ -16,6 +16,7 @@ import android.widget.ListView;
 
 import com.unl.lapc.registrodocente.R;
 import com.unl.lapc.registrodocente.adapter.ClasesMainAdapter;
+import com.unl.lapc.registrodocente.fragment.FragmentEstudiantes;
 import com.unl.lapc.registrodocente.dao.ClaseDao;
 import com.unl.lapc.registrodocente.modelo.Clase;
 
@@ -71,7 +72,7 @@ public class Main extends AppCompatActivity implements NavigationView.OnNavigati
     }
 
     private void show(Clase cls){
-        Intent intent = new Intent(this, MainEstudiantes.class);
+        Intent intent = new Intent(this, MainClase.class);
         intent.putExtra("clase", cls);
         startActivity(intent);
     }

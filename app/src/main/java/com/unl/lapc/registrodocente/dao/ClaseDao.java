@@ -138,7 +138,7 @@ public class ClaseDao extends DBHandler {
                 cls.setNumeroEstudiantes(cursor.getInt(3));
 
                 Periodo p = new Periodo();
-                p.setId(cursor.getInt(3));
+                p.setId(cursor.getInt(4));
                 cls.setPeriodo(p);
                 shopList.add(cls);
 
