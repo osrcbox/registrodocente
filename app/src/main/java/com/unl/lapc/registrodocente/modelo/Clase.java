@@ -28,15 +28,6 @@ public class Clase implements Parcelable{
         this.nombre = nombre;
         this.activa = activa;
     }
-
-    private Clase(Parcel in) {
-        super();
-        this.id = in.readInt();
-        this.nombre = in.readString();
-        this.activa = in.readInt() > 0;
-        this.setPeriodo(new Periodo(in.readInt()));
-    }
-
     @Override
     public String toString() {
         return nombre;
@@ -65,10 +56,18 @@ public class Clase implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(getId());
-        parcel.writeString(getNombre());
-        parcel.writeInt(isActiva() ? 1 : 0);
-        parcel.writeInt(getPeriodo().getId());
+        parcel.writeInt(id);
+        parcel.writeString(nombre);
+        parcel.writeInt(activa ? 1 : 0);
+        parcel.writeInt(periodo != null ? periodo.getId() : 0);
+    }
+
+    private Clase(Parcel in) {
+        super();
+        this.id = in.readInt();
+        this.nombre = in.readString();
+        this.activa = in.readInt() > 0;
+        this.setPeriodo(new Periodo(in.readInt()));
     }
 
     public static final Creator<Clase> CREATOR = new Creator<Clase>() {
