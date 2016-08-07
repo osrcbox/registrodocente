@@ -31,6 +31,14 @@ public class Parcial implements Parcelable{
         this.nombre = nombre;
     }
 
+    public Parcial(Periodo periodo, Quimestre quimestre){
+        this.id = 0;
+        this.periodo = periodo;
+        this.quimestre = quimestre;
+        this.inicio = new Date();
+        this.fin = new Date();
+    }
+
     public Parcial(int id, String nombre, Date inicio, Date fin, int numero, Periodo periodo, Quimestre quimestre){
         this.id = id;
         this.nombre = nombre;

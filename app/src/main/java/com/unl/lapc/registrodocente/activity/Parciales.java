@@ -11,38 +11,43 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.unl.lapc.registrodocente.R;
-import com.unl.lapc.registrodocente.adapter.QuimestreAdapter;
-import com.unl.lapc.registrodocente.dao.QuimestreDao;
+import com.unl.lapc.registrodocente.adapter.ParcialAdapter;
+import com.unl.lapc.registrodocente.dao.ParcialDao;
+import com.unl.lapc.registrodocente.modelo.Parcial;
 import com.unl.lapc.registrodocente.modelo.Periodo;
 import com.unl.lapc.registrodocente.modelo.Quimestre;
 
-public class Quimestres extends AppCompatActivity {
+public class Parciales extends AppCompatActivity {
 
-    private ListView mLeadsList;
-    private QuimestreDao dao;
+    private ParcialDao dao;
+    private ListView listView;
+
+    private Quimestre quimestre;
     private Periodo periodo;
+    private ParcialAdapter parcialAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quimestres);
+        setContentView(R.layout.activity_parciales);
+        CustomInit();
+    }
 
+    private void CustomInit(){
         Bundle bundle = getIntent().getExtras();
+        quimestre = bundle.getParcelable("quimestre");
         periodo = bundle.getParcelable("periodo");
 
-        mLeadsList = (ListView) findViewById(R.id.listView);
-        dao = new QuimestreDao(this);
+        dao = new ParcialDao(this);
 
-        // Inicializar el adaptador con la fuente de datos.
-        QuimestreAdapter mLeadsAdapter = new QuimestreAdapter(this, dao.getAll(periodo));
+        parcialAdapter = new ParcialAdapter(this, dao.getAll(quimestre));
+        listView = (ListView) findViewById(R.id.listView);
+        listView.setAdapter(parcialAdapter);
 
-        //Relacionando la lista con el adaptador
-        mLeadsList.setAdapter(mLeadsAdapter);
-
-        mLeadsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Quimestre m = (Quimestre) mLeadsList.getItemAtPosition(i);
+                Parcial m = (Parcial) listView.getItemAtPosition(i);
                 if(m != null){
                     editAction(m);
                 }
@@ -52,7 +57,7 @@ public class Quimestres extends AppCompatActivity {
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater=getMenuInflater();
-        inflater.inflate(R.menu.menu_quimestres, menu);
+        inflater.inflate(R.menu.menu_parciales, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -61,7 +66,7 @@ public class Quimestres extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_add) {
-            editAction(new Quimestre(periodo));
+            editAction(new Parcial(periodo, quimestre));
             return true;
         }
 
@@ -74,14 +79,16 @@ public class Quimestres extends AppCompatActivity {
     }
 
     private void back(){
-        Intent intent = new Intent(this, Periodos.class);
+        Intent intent = new Intent(this, Quimestres.class);
+        intent.putExtra("periodo", periodo);
         startActivity(intent);
     }
 
-    private void editAction(Quimestre quimestre){
-        Intent intent = new Intent(this, EditQuimestre.class);
+    private void editAction(Parcial parcial){
+        Intent intent = new Intent(this, EditParcial.class);
         intent.putExtra("periodo", periodo);
         intent.putExtra("quimestre", quimestre);
+        intent.putExtra("parcial", parcial);
         startActivity(intent);
     }
 }
