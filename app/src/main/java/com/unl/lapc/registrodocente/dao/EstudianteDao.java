@@ -33,6 +33,9 @@ public class EstudianteDao extends DBHandler {
         values.put("celular", est.getCelular());
         values.put("sexo", est.getSexo());
         values.put("orden", est.getOrden());
+        values.put("notaFinal", est.getNotaFinal());
+        values.put("porcentajeAsistencias", est.getPorcentajeAsistencias());
+        values.put("estado", est.getEstado());
         values.put("clase_id", est.getClase().getId());
 
         long id = db.insert(TABLE_NAME, null, values);
@@ -51,6 +54,9 @@ public class EstudianteDao extends DBHandler {
         values.put("celular", est.getCelular());
         values.put("sexo", est.getSexo());
         values.put("orden", est.getOrden());
+        values.put("notaFinal", est.getNotaFinal());
+        values.put("porcentajeAsistencias", est.getPorcentajeAsistencias());
+        values.put("estado", est.getEstado());
         values.put("clase_id", est.getClase().getId());
 
         return db.update(TABLE_NAME, values, "id = ?", new String[]{String.valueOf(est.getId())});
@@ -58,11 +64,11 @@ public class EstudianteDao extends DBHandler {
 
     public Estudiante get(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_NAME, new String[] { "id", "cedula", "nombres", "apellidos", "email", "celular", "sexo", "orden", "clase_id"}, "id=?", new String[] { String.valueOf(id) }, null, null, null, null);
+        Cursor cursor = db.query(TABLE_NAME, new String[] { "id", "cedula", "nombres", "apellidos", "email", "celular", "sexo", "orden", "notaFinal", "porcentajeAsistencias", "estado", "clase_id"}, "id=?", new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
-        Estudiante contact = new Estudiante(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getInt(7), new Clase(cursor.getInt(8)));
+        Estudiante contact = new Estudiante(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getInt(7), cursor.getDouble(8), cursor.getDouble(9), cursor.getString(10), new Clase(cursor.getInt(11)));
 
         return contact;
     }

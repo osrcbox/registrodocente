@@ -8,6 +8,10 @@ import android.os.Parcelable;
  */
 public class Estudiante implements Parcelable{
 
+    public static final String ESTADO_REGISTRADO = "Registrado";
+    public static final String ESTADO_APROBADO = "Aprobado";
+    public static final String ESTADO_REPROBADO = "Reprobado";
+
     private int id;
 
     private String cedula;
@@ -19,6 +23,9 @@ public class Estudiante implements Parcelable{
     private String celular;
 
     private int orden;
+    private double notaFinal;
+    private double porcentajeAsistencias;
+    private String estado = ESTADO_REGISTRADO;
 
     private Clase clase;
 
@@ -46,7 +53,7 @@ public class Estudiante implements Parcelable{
         this.setApellidos(apellidos);
     }
 
-    public Estudiante(int id, String cedula, String nombres, String apellidos, String email, String celular, String sexo, int orden, Clase clase){
+    public Estudiante(int id, String cedula, String nombres, String apellidos, String email, String celular, String sexo, int orden, double notaFinal, double porcentajeAsistencias, String estado, Clase clase){
         this.setId(id);
         this.setCedula(cedula);
         this.setNombres(nombres);
@@ -55,21 +62,13 @@ public class Estudiante implements Parcelable{
         this.setCelular(celular);
         this.setSexo(sexo);
         this.setOrden(orden);
+        this.setNotaFinal(notaFinal);
+        this.setPorcentajeAsistencias(porcentajeAsistencias);
+        this.setEstado(estado);
         this.clase = clase;
     }
 
-    private Estudiante(Parcel in) {
-        super();
-        this.setId(in.readInt());
-        this.setCedula(in.readString());
-        this.setNombres(in.readString());
-        this.setApellidos(in.readString());
-        this.setSexo(in.readString());
-        this.setEmail(in.readString());
-        this.setCelular(in.readString());
-        this.setOrden(in.readInt());
-        this.setClase(new Clase(in.readInt()));
-    }
+
 
     public String getNombresCompletos() {
         return apellidos + " " + nombres;
@@ -93,6 +92,22 @@ public class Estudiante implements Parcelable{
         return 0;
     }
 
+    private Estudiante(Parcel in) {
+        super();
+        this.setId(in.readInt());
+        this.setCedula(in.readString());
+        this.setNombres(in.readString());
+        this.setApellidos(in.readString());
+        this.setSexo(in.readString());
+        this.setEmail(in.readString());
+        this.setCelular(in.readString());
+        this.setOrden(in.readInt());
+        this.setNotaFinal(in.readDouble());
+        this.setPorcentajeAsistencias(in.readDouble());
+        this.setEstado(in.readString());
+        this.setClase(new Clase(in.readInt()));
+    }
+
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(getId());
@@ -103,6 +118,9 @@ public class Estudiante implements Parcelable{
         parcel.writeString(getEmail());
         parcel.writeString(getCelular());
         parcel.writeInt(getOrden());
+        parcel.writeDouble(getNotaFinal());
+        parcel.writeDouble(getPorcentajeAsistencias());
+        parcel.writeString(getEstado());
         parcel.writeInt(getClase().getId());
     }
 
@@ -174,8 +192,31 @@ public class Estudiante implements Parcelable{
     public Clase getClase() {
         return clase;
     }
-
     public void setClase(Clase clase) {
         this.clase = clase;
+    }
+
+    public double getNotaFinal() {
+        return notaFinal;
+    }
+
+    public void setNotaFinal(double notaFinal) {
+        this.notaFinal = notaFinal;
+    }
+
+    public double getPorcentajeAsistencias() {
+        return porcentajeAsistencias;
+    }
+
+    public void setPorcentajeAsistencias(double porcentajeAsistencias) {
+        this.porcentajeAsistencias = porcentajeAsistencias;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }

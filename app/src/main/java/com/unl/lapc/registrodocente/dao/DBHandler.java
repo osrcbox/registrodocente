@@ -48,7 +48,7 @@ public class DBHandler extends SQLiteOpenHelper {
         String CREATE_CL = "CREATE TABLE clase(id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT, activa BOOLEAN DEFAULT 1, periodo_id INTEGER NOT NULL, FOREIGN KEY(periodo_id) REFERENCES periodo(id))";
         //verificar
 
-        String CREATE_ES = "CREATE TABLE estudiante(id INTEGER PRIMARY KEY AUTOINCREMENT, cedula TEXT, nombres TEXT, apellidos TEXT, sexo TEXT, email TEXT, celular TEXT, orden INTEGER, clase_id INTEGER NOT NULL, FOREIGN KEY(clase_id) REFERENCES clase(id))";
+        String CREATE_ES = "CREATE TABLE estudiante(id INTEGER PRIMARY KEY AUTOINCREMENT, cedula TEXT, nombres TEXT, apellidos TEXT, sexo TEXT, email TEXT, celular TEXT, orden INTEGER, notaFinal REAL, porcentajeAsistencias REAL, estado TEXT, clase_id INTEGER NOT NULL, FOREIGN KEY(clase_id) REFERENCES clase(id))";
         //String CREATE_ES_CL = "CREATE TABLE clase_estudiante(id INTEGER PRIMARY KEY AUTOINCREMENT, clase_id INTEGER NOT NULL, estudiante_id INTEGER NOT NULL, orden INTEGER)";
         String CREATE_AS = "CREATE TABLE asistencia(id INTEGER PRIMARY KEY AUTOINCREMENT, calendario_id INTEGER NOT NULL, clase_id INTEGER NOT NULL, estudiante_id INTEGER NOT NULL, fecha DATE, estado TEXT, FOREIGN KEY(clase_id) REFERENCES clase(id), FOREIGN KEY(estudiante_id) REFERENCES estudiante(id), FOREIGN KEY(calendario_id) REFERENCES calendario(id))";
 
@@ -167,7 +167,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
         //
         db.execSQL("insert into clase (nombre, activa, periodo_id) values ('Clase 1', 1, 1)");
-        db.execSQL("insert into estudiante (cedula, nombres, apellidos, sexo, clase_id) values ('0000000000','Jhon', 'Doe', 'Hombre', 1)");
+        db.execSQL("insert into estudiante (cedula, nombres, apellidos, sexo, orden, estado, clase_id) values ('0000000000','Jhon', 'Doe', 'Hombre', 1, 'Registrado', 1)");
     }
 
     @Override

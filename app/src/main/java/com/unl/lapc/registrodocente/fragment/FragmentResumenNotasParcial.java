@@ -14,22 +14,25 @@ import com.unl.lapc.registrodocente.R;
 import com.unl.lapc.registrodocente.dao.EstudianteDao;
 import com.unl.lapc.registrodocente.modelo.Clase;
 import com.unl.lapc.registrodocente.modelo.Estudiante;
+import com.unl.lapc.registrodocente.modelo.Parcial;
 
 import java.util.List;
 
-public class FragmentResumenNotas extends Fragment {
+public class FragmentResumenNotasParcial extends Fragment {
 
     private EstudianteDao estudianteDao;
     private Clase clase;
+    private Parcial parcial;
     private TableLayout tlResumenNotas;
 
-    public FragmentResumenNotas() {
+    public FragmentResumenNotasParcial() {
         // Required empty public constructor
     }
 
     public void cargar(){
         Bundle args = getArguments();
         this.clase = args.getParcelable("clase");
+        this.parcial = args.getParcelable("parcial");
 
         estudianteDao = new EstudianteDao(getContext());
         List<Estudiante> lista = estudianteDao.getEstudiantes(clase);
@@ -87,7 +90,7 @@ public class FragmentResumenNotas extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_resumen_notas, container, false);
+        View view = inflater.inflate(R.layout.fragment_resumen_notas_parcial, container, false);
 
         tlResumenNotas = (TableLayout)view.findViewById(R.id.tlResumenNotas);
 

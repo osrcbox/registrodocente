@@ -54,6 +54,7 @@ public class EditEstudiante extends AppCompatActivity {
         estudiante = bundle.getParcelable("estudiante");
 
         if(estudiante.getId() > 0){
+            //Recarga porque solo vienen datos generales
             estudiante = dao.get(estudiante.getId());
         }
 

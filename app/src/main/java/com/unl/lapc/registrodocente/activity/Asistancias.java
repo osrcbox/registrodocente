@@ -229,7 +229,7 @@ public class Asistancias extends AppCompatActivity {
         int i = 0;
         for(Estudiante c : estudiantes){
             i++;
-            TableRow row = new TableRow(getApplicationContext());
+            TableRow row = new TableRow(this);
             row.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
             Asistencia asi = null;

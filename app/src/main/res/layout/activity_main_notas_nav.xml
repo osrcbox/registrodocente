@@ -29,6 +29,6 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main_notas"
-        app:menu="@menu/nav_drawer_main_notas" />
+        app:menu="@menu/drawer_main_notas" />
 
 </android.support.v4.widget.DrawerLayout>
